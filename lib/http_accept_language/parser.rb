@@ -51,14 +51,14 @@ module HttpAcceptLanguage
       (user_preferred_languages & array.map(&:to_s)).first
     end
 
-    # Returns the first of the user_preferred_languages that is compatible
+    # Returns all of the user_preferred_languages that are compatible
     # with the available locales. Ignores region.
     #
     # Example:
     #
-    #   request.compatible_language_from I18n.available_locales
+    #   request.compatible_languages_from I18n.available_locales
     #
-    def compatible_language_from(available_languages)
+    def compatible_languages_from(available_languages)
       user_preferred_languages.map do |preferred| #en-US
         preferred = preferred.downcase
         preferred_language = preferred.split('-', 2).first
@@ -67,7 +67,18 @@ module HttpAcceptLanguage
           available = available.to_s.downcase
           preferred == available || preferred_language == available.split('-', 2).first
         end
-      end.compact.first
+      end.compact
+    end
+
+    # Returns the first of the user_preferred_languages that is compatible
+    # with the available locales. Ignores region.
+    #
+    # Example:
+    #
+    #   request.compatible_language_from I18n.available_locales
+    #
+    def compatible_language_from(available_languages)
+      compatible_languages_from(available_languages).first
     end
 
     # Returns a supplied list of available locals without any extra application info
